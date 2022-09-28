@@ -10,8 +10,11 @@ app.use(cors());
 
 //routes
 app.post("/user", (req, res) => {
-  console.log("backend!");
   query.Signup(req, res);
+});
+
+app.post("/login", (req, res) => {
+  query.Login(req, res);
 });
 
 app.listen(3000, () => {

@@ -99,8 +99,8 @@ export default function SignUp({ show, onClose }) {
       <div className="inputs">Password:</div>
       <input
         className="user-input"
-        type="text"
-        name="name"
+        type="password"
+        name="password"
         maxLength={50}
         size={36}
         placeholder="Enter password here..."
