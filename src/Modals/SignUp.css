@@ -1,0 +1,104 @@
+body.active-modal {
+  overflow-y: hidden;
+}
+
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(49, 49, 49, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  text-transform: none;
+  width: auto;
+  background-color: #fff;
+  border-radius: 5px;
+  background-image: url('../Images/paper.jpeg');
+}
+
+.modal-header,
+.modal-footer {
+  padding: 5px 5px 0 5px;
+}
+
+.modal-title {
+  margin: 0;
+}
+
+.modal-body {
+  display: inline-block;
+  margin-right: 20px;
+  padding: 10px;
+}
+
+.close-button {
+  display: inline !important;
+  color: white;
+}
+
+.submit-button {
+  display: inline !important;
+  color: white;
+}
+
+.modal-title, .modal-subtitle {
+  color: rgb(255, 0, 0);
+  text-shadow: 2px 2px #000000;
+  font-size: 160%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.static {
+  font-size: 12px;
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 15px;
+  margin-left: 10px;
+}
+
+.inputs {
+  display: inline-block;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px #000000;
+}
+
+.submit-button,
+.close-button {
+  background: #ff0000;
+  border-radius: 3px;
+  border: 2px solid rgb(0, 0, 0);
+  padding: 0.5em 1em;
+  margin-left: 5px;
+  display: block;
+}
+
+.submit-button:hover,
+.close-button:hover {
+  background: rgb(120, 0, 0);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 5px 10px;
+  transform: scale(1.05);
+}
+
+.user-input {
+  margin: 0 5px;
+  outline: none;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.text-area {
+  display: block;
+  outline: none;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
