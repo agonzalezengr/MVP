@@ -12,7 +12,7 @@ function App() {
   const [user, setUser] = useState({ name: "", email: "", password: "" });
   const [show, setShow] = useState(false);
   const [show1, setShow1] = useState(false);
-  const [game, setGame] = useState(false);
+  const [game, setGame] = useState(true);
 
   if (show || show1) {
     document.body.classList.add("active-modal");
