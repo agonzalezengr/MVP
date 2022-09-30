@@ -1,20 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled, { keyframes } from "styled-components";
-import bandit from "./Images/bandit_idle.png";
-import test from "./Images/Gifs/__Idle.gif";
-import testLeft from "./Images/Gifs/IdleLeft.gif";
-import testRun from "./Images/Gifs/__Run.gif";
-import testRunLeft from "./Images/Gifs/RunLeft.gif";
-import testAttack from "./Images/Gifs/__Attack.gif";
-import testAttackLeft from "./Images/Gifs/attackLeft.gif";
+// player gifs ----------------------------------
+import playerIdle from "./Images/playerGifs/playerIdle.gif";
+import playerIdleLeft from "./Images/playerGifs/playerIdleLeft.gif";
+import playerRun from "./Images/playerGifs/playerRun.gif";
+import playerRunLeft from "./Images/playerGifs/playerRunLeft.gif";
+import playerAttack from "./Images/playerGifs/playerAttack.gif";
+import playerAttackLeft from "./Images/playerGifs/playerAttackLeft.gif";
+// other gifs ----------------------------------
+import enemyIdle from "./Images/enemyGifs/enemyIdle.gif";
+import enemyIdleLeft from "./Images/enemyGifs/enemyIdleLeft.gif";
+import enemyWalk from "./Images/enemyGifs/enemyWalk.gif";
+import enemyWalkLeft from "./Images/enemyGifs/enemyWalkLeft.gif";
+
 import "./styles.css";
 
-const Box = styled.div`
-  background: url(${test});
+const Player = styled.div`
+  background: url(${playerIdle});
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
-
   border: 2px solid white;
 `;
 
@@ -22,47 +27,76 @@ const banditAnim = keyframes`
   100% { background-position: -1612px; }
 `;
 
-const Bandit = styled.div`
-  height: 200px;
-  width: 200px;
-  position: absolute;
-  bottom: 50px;
-  right: 250px;
-  transform: translate(-50%, -50%);
-  background: url(${bandit}) left center;
-  animation: ${banditAnim} 1s steps(6) infinite;
-`;
+// const Bandit = styled.div`
+//   height: 200px;
+//   width: 200px;
+//   position: absolute;
+//   bottom: 50px;
+//   right: 250px;
+//   transform: translate(-50%, -50%);
+//   background: url() left center;
+//   animation: ${banditAnim} 1s steps(6) infinite;
+// `;
 
 function Game() {
-  const [walk, setWalk] = useState(`${test}`);
-  const [move, setMove] = useState(200);
+  // Player
+  const [gif, setGif] = useState(`${playerIdle}`);
+  const [left, setLeft] = useState(200);
+  // Enemy
+  const [eGif, setEGIF] = useState(`${enemyIdleLeft}`);
+  const [eRight, setERight] = useState(250);
 
-  const [idle, setIdle] = useState(false);
+  // Enemy Movement =====================
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("eRight = ", eRight);
+      const x = Math.floor(Math.random() * 4) + 1;
+      const i = Math.floor(Math.random() * 2) + 1;
+      if (x === 1) {
+        const newRight = eRight - 20;
+        setERight(newRight);
+        setEGIF(`${enemyWalk}`);
+      } else if (x === 2) {
+        const newRight = eRight + 20;
+        setERight(newRight);
+        setEGIF(`${enemyWalkLeft}`);
+      } else {
+        if (i == 1) {
+          setEGIF(`${enemyIdle}`);
+        } else {
+          setEGIF(`${enemyIdleLeft}`);
+        }
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, [eRight]);
+
+  useEffect(() => {
+    // game start default
+    setEGIF(`${enemyIdleLeft}`);
+  }, []);
 
   // KEY DOWN ============================
   const onKeyDown = useCallback((e) => {
     switch (e.code) {
       case "KeyD":
-        //setAnim(`url(${knightRR})`);
-        setWalk(`${testRun}`);
-        setMove(move + 20);
-        //setLeft(left + 20);
+        setGif(`${playerRun}`);
+        setLeft(left + 20);
         break;
       case "KeyA":
-        // setAnim(`url(${knightRL})`);
-        // setLeft(left - 20);
-        setWalk(`${testRunLeft}`);
-        setMove(move - 20);
+        setGif(`${playerRunLeft}`);
+        setLeft(left - 20);
         break;
       case "KeyJ":
-        if (walk === `${test}` || walk === `${testRun}`) {
-          setWalk(`${testAttack}`);
-        } else if (walk === `${testLeft}` || walk === `${testRunLeft}`) {
-          setWalk(`${testAttackLeft}`);
-        } else if (walk === `${testAttack}`) {
-          setWalk(`${test}`);
-        } else if (walk === `${testAttackLeft}`) {
-          setWalk(`${testLeft}`);
+        // conditions for animation direction
+        if (gif === `${playerIdle}` || gif === `${playerRun}`) {
+          setGif(`${playerAttack}`);
+        } else if (gif === `${playerIdleLeft}` || gif === `${playerRunLeft}`) {
+          setGif(`${playerAttackLeft}`);
+        } else if (gif === `${playerAttack}`) {
+          setGif(`${playerAttack}`);
+        } else if (gif === `${playerAttackLeft}`) {
+          setGif(`${playerAttackLeft}`);
         } else {
           // nothing atm
         }
@@ -74,18 +108,18 @@ function Game() {
 
   function upHandler({ key }) {
     if (key === "d") {
-      setWalk(`${test}`);
+      setGif(`${playerIdle}`);
     } else if (key === "a") {
-      setWalk(`${testLeft}`);
+      setGif(`${playerIdleLeft}`);
     } else if (key === "j") {
       if (
-        walk === `${test}` ||
-        walk === `${testRun}` ||
-        walk == `${testAttack}`
+        gif === `${playerIdle}` ||
+        gif === `${playerRun}` ||
+        gif == `${playerAttack}`
       ) {
-        setWalk(`${test}`);
+        setGif(`${playerIdle}`);
       } else {
-        setWalk(`${testLeft}`);
+        setGif(`${playerIdleLeft}`);
       }
     }
   }
@@ -102,17 +136,27 @@ function Game() {
   return (
     <div className="screen">
       <img
-        src={walk}
+        src={gif}
         style={{
-          border: "2px solid white",
-          height: "250px",
-          width: "300px",
+          // border: "2px solid white",
+          height: "200px",
+          width: "200px",
           position: "absolute",
           bottom: "170px",
-          left: `${move}px`,
+          left: `${left}px`,
         }}
       />
-      <Bandit />
+      <img
+        src={eGif}
+        style={{
+          // border: "2px solid white",
+          height: "200px",
+          width: "200px",
+          position: "absolute",
+          bottom: "130px",
+          right: `${eRight}px`,
+        }}
+      />
     </div>
   );
 }
