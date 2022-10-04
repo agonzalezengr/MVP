@@ -248,7 +248,8 @@ body {
   right:0px;
   bottom:0px;
   left:0px;
-  background-image: url('./Images/paper.jpeg');
+  background-color: #000000;
+  /* background-image: url('./Images/'); */
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -265,8 +266,9 @@ body {
   max-width: 1300px;
   min-height: 700px;
   max-height: 700px;
-  background-image: url('./Images/gamebackground.png');
+  border: solid white;
+  background-image: url('./Images/back1.gif');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 100%;
+  background-size: 100% 100%;
 }

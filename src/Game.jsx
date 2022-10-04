@@ -12,6 +12,11 @@ import enemyIdle from "./Images/enemyGifs/enemyIdle.gif";
 import enemyIdleLeft from "./Images/enemyGifs/enemyIdleLeft.gif";
 import enemyWalk from "./Images/enemyGifs/enemyWalk.gif";
 import enemyWalkLeft from "./Images/enemyGifs/enemyWalkLeft.gif";
+import death from "./Images/death.gif";
+// Health Bar ----------
+import redBar from "./Images/RedBar.png";
+import greenBar from "./Images/GreenBar.png";
+import blueBar from "./Images/BlueBar.png";
 
 import "./styles.css";
 
@@ -41,7 +46,9 @@ const banditAnim = keyframes`
 function Game() {
   // Player
   const [gif, setGif] = useState(`${playerIdle}`);
-  const [left, setLeft] = useState(200);
+  const [left, setLeft] = useState(50);
+  const [hp, setHp] = useState(0);
+  const [died, setDied] = useState(`died`);
   // Enemy
   const [eGif, setEGIF] = useState(`${enemyIdleLeft}`);
   const [eRight, setERight] = useState(250);
@@ -49,7 +56,6 @@ function Game() {
   // Enemy Movement =====================
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("eRight = ", eRight);
       const x = Math.floor(Math.random() * 4) + 1;
       const i = Math.floor(Math.random() * 2) + 1;
       if (x === 1) {
@@ -81,11 +87,19 @@ function Game() {
     switch (e.code) {
       case "KeyD":
         setGif(`${playerRun}`);
-        setLeft(left + 20);
+        if (left >= 1110) {
+          setLeft(left + 0);
+        } else {
+          setLeft(left + 20);
+        }
         break;
       case "KeyA":
         setGif(`${playerRunLeft}`);
-        setLeft(left - 20);
+        if (-100 >= left) {
+          setLeft(left + 0);
+        } else {
+          setLeft(left - 20);
+        }
         break;
       case "KeyJ":
         // conditions for animation direction
@@ -99,6 +113,14 @@ function Game() {
           setGif(`${playerAttackLeft}`);
         } else {
           // nothing atm
+        }
+        break;
+      case "KeyK":
+        if (hp === 280) {
+          setHp(hp + 0)
+          setDied(`${death}`);
+        } else {
+          setHp(hp + 10)
         }
         break;
       default:
@@ -135,26 +157,85 @@ function Game() {
 
   return (
     <div className="screen">
+      <div style={{
+      backgroundImage: `url(${died})`,
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundSize: "100% 100%",
+      position: "relative",
+      minWidth: "1300px",
+      maxWidth: "1300px",
+      minHeight: "700px",
+      maxHeight: "700px",
+      zIndex: "6"
+
+    }}>
+      </div>
+      <img
+      src={`${redBar}`}
+      style={{
+        height: "20px",
+        width: "300px",
+        position: "absolute",
+        top: "20px",
+        left: "100px"
+      }}
+      ></img>
+      <div
+      style={{
+        background: "black",
+        borderRadius: "25px",
+        height: "8px",
+        width: `${hp}px`,
+        position: "absolute",
+        top: "23px",
+        right: "910px"
+      }}
+      >
+      </div>
+      <img
+      src={`${greenBar}`}
+      style={{
+        height: "20px",
+        width: "300px",
+        position: "absolute",
+        top: "40px",
+        left: "100px"
+      }}
+      ></img>
+      <img
+      src={`${blueBar}`}
+      style={{
+        height: "20px",
+        width: "300px",
+        position: "absolute",
+        top: "60px",
+        left: "100px"
+      }}
+      ></img>
       <img
         src={gif}
         style={{
           // border: "2px solid white",
-          height: "200px",
-          width: "200px",
+          height: "300px",
+          width: "300px",
           position: "absolute",
-          bottom: "170px",
+          bottom: "50px",
           left: `${left}px`,
+          zIndex: '5'
         }}
       />
       <img
         src={eGif}
         style={{
           // border: "2px solid white",
-          height: "200px",
-          width: "200px",
+          height: "300px",
+          width: "300px",
           position: "absolute",
-          bottom: "130px",
+          bottom: "-10px",
           right: `${eRight}px`,
+          zIndex: '4'
+
         }}
       />
     </div>
