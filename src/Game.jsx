@@ -7,12 +7,14 @@ import playerRun from "./Images/playerGifs/playerRun.gif";
 import playerRunLeft from "./Images/playerGifs/playerRunLeft.gif";
 import playerAttack from "./Images/playerGifs/playerAttack.gif";
 import playerAttackLeft from "./Images/playerGifs/playerAttackLeft.gif";
-// other gifs ----------------------------------
+// enemy gifs ----------------------------------
 import enemyIdle from "./Images/enemyGifs/enemyIdle.gif";
 import enemyIdleLeft from "./Images/enemyGifs/enemyIdleLeft.gif";
 import enemyWalk from "./Images/enemyGifs/enemyWalk.gif";
 import enemyWalkLeft from "./Images/enemyGifs/enemyWalkLeft.gif";
-import death from "./Images/death.gif";
+import enemyAttack from "./Images/enemyGifs/attack.gif"
+import enemyAttackLeft from "./Images/enemyGifs/attackLeft.gif"
+import youDied from "./Images/death.gif";
 // Health Bar ----------
 import redBar from "./Images/RedBar.png";
 import greenBar from "./Images/GreenBar.png";
@@ -43,44 +45,81 @@ const banditAnim = keyframes`
 //   animation: ${banditAnim} 1s steps(6) infinite;
 // `;
 
-function Game() {
+function Game( {game, setGame} ) {
   // Player
   const [gif, setGif] = useState(`${playerIdle}`);
   const [left, setLeft] = useState(50);
   const [hp, setHp] = useState(0);
-  const [died, setDied] = useState(`died`);
+  const [sp, setSp] = useState(0);
+  const [died, setDied] = useState(`${youDied}`);
+  const [death, setDeath] = useState(false);
   // Enemy
   const [eGif, setEGIF] = useState(`${enemyIdleLeft}`);
-  const [eRight, setERight] = useState(250);
+  const [eRight, setERight] = useState(-50);
 
   // Enemy Movement =====================
   useEffect(() => {
     const interval = setInterval(() => {
-      const x = Math.floor(Math.random() * 4) + 1;
-      const i = Math.floor(Math.random() * 2) + 1;
-      if (x === 1) {
+
+      if (left >= 650) {
+        if (eRight >= 250) {
+          setEGIF(`${enemyIdleLeft}`);
+          setEGIF(`${enemyAttackLeft}`);
+          if (left > 570 && left < 750) {
+            if (hp === 280) {
+              setHp(hp + 0);
+              setDeath(true);
+            } else {
+              setHp(hp + 40);
+            }
+          }
+        } else {
+          const newRight = eRight + 20;
+          setERight(newRight);
+          setEGIF(`${enemyWalkLeft}`);
+        }
+      } else if (left < 650 && eRight >= -50) {
         const newRight = eRight - 20;
         setERight(newRight);
         setEGIF(`${enemyWalk}`);
-      } else if (x === 2) {
-        const newRight = eRight + 20;
-        setERight(newRight);
-        setEGIF(`${enemyWalkLeft}`);
       } else {
-        if (i == 1) {
-          setEGIF(`${enemyIdle}`);
+        const x = Math.floor(Math.random() * 9) + 1;
+        const i = Math.floor(Math.random() * 2) + 1;
+        if ((x === 1 || x === 2 || x === 3) && eRight > -50) {
+          const newRight = eRight - 20;
+          setERight(newRight);
+          setEGIF(`${enemyWalk}`);
+        } else if ((x === 4 || x === 5 || x === 6) && eRight < 350) {
+          const newRight = eRight + 20;
+          setERight(newRight);
+          setEGIF(`${enemyWalkLeft}`);
         } else {
-          setEGIF(`${enemyIdleLeft}`);
+          if (i == 1) {
+            setEGIF(`${enemyIdle}`);
+          } else {
+            setEGIF(`${enemyIdleLeft}`);
+          }
         }
       }
-    }, 500);
+
+
+    }, 400);
     return () => clearInterval(interval);
-  }, [eRight]);
+  }, [eRight, hp, left]);
 
   useEffect(() => {
     // game start default
     setEGIF(`${enemyIdleLeft}`);
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if(sp > 0) {
+        setSp(sp - 10);
+      }
+    }, 250);
+    return () => clearInterval(interval);
+  }, [sp]);
 
   // KEY DOWN ============================
   const onKeyDown = useCallback((e) => {
@@ -102,23 +141,26 @@ function Game() {
         }
         break;
       case "KeyJ":
-        // conditions for animation direction
-        if (gif === `${playerIdle}` || gif === `${playerRun}`) {
-          setGif(`${playerAttack}`);
-        } else if (gif === `${playerIdleLeft}` || gif === `${playerRunLeft}`) {
-          setGif(`${playerAttackLeft}`);
-        } else if (gif === `${playerAttack}`) {
-          setGif(`${playerAttack}`);
-        } else if (gif === `${playerAttackLeft}`) {
-          setGif(`${playerAttackLeft}`);
-        } else {
-          // nothing atm
+        if (sp < 280) {
+          setSp(sp + 10);
+          // conditions for animation direction
+          if (gif === `${playerIdle}` || gif === `${playerRun}`) {
+            setGif(`${playerAttack}`);
+          } else if (gif === `${playerIdleLeft}` || gif === `${playerRunLeft}`) {
+            setGif(`${playerAttackLeft}`);
+          } else if (gif === `${playerAttack}`) {
+            setGif(`${playerAttack}`);
+          } else if (gif === `${playerAttackLeft}`) {
+            setGif(`${playerAttackLeft}`);
+          } else {
+            // nothing atm
+          }
         }
         break;
       case "KeyK":
         if (hp === 280) {
           setHp(hp + 0)
-          setDied(`${death}`);
+          setDeath(true);
         } else {
           setHp(hp + 10)
         }
@@ -155,8 +197,31 @@ function Game() {
     };
   }, [onKeyDown]);
 
+
+  function retry(event){
+    event.preventDefault();
+    localStorage.setItem('gameIs', JSON.stringify(true));
+    window.location.reload(false);
+  }
+
+  function quit() {
+    localStorage.setItem('gameIs', JSON.stringify(false));
+    window.location.reload(false);
+  }
+
   return (
     <div className="screen">
+      <button style={{
+        border: '2px black',
+        width: '60px',
+        height: '20px',
+        color: 'white',
+        background: "red",
+        position: "absolute",
+        left: "0%",
+        top: "0%"}} onClick={quit}>Quit</button>
+      <h1 style={{color: 'white', position: "absolute", left: "50%"}}>PP:{left} EP:{eRight}</h1>
+      {death ?
       <div style={{
       backgroundImage: `url(${died})`,
       backgroundRepeat: "no-repeat",
@@ -168,9 +233,27 @@ function Game() {
       minHeight: "700px",
       maxHeight: "700px",
       zIndex: "6"
-
-    }}>
+      }}>
+      <form onSubmit={retry}>
+      <input style={{
+        width: '80px',
+        height: '30px',
+        color: 'white',
+        background: "red",
+        position: "absolute",
+        left: "47%",
+        bottom: "25%"}} type="submit" value="Try Again"/>
+      </form>
+      <button style={{
+        width: '80px',
+        height: '30px',
+        color: 'white',
+        background: "red",
+        position: "absolute",
+        left: "47%",
+        bottom: "15%"}} onClick={quit}>Quit</button>
       </div>
+       : null }
       <img
       src={`${redBar}`}
       style={{
@@ -203,6 +286,18 @@ function Game() {
         left: "100px"
       }}
       ></img>
+      <div
+      style={{
+        background: "black",
+        borderRadius: "25px",
+        height: "8px",
+        width: `${sp}px`,
+        position: "absolute",
+        top: "43px",
+        right: "910px"
+      }}
+      >
+      </div>
       <img
       src={`${blueBar}`}
       style={{

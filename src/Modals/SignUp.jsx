@@ -40,7 +40,7 @@ export default function SignUp({ show, onClose }) {
     e.preventDefault();
     console.log("data = ", data);
     axios
-      .post("http:/localhost:3000/user", data)
+      .post("/user", data)
       .then(() => {
         swal(
           "🎊 Welcome! 🎊",
@@ -49,7 +49,8 @@ export default function SignUp({ show, onClose }) {
         );
         onClose();
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log('err = ', err);
         swal(
           "Error",
           "That email is already used. Please try again later.",

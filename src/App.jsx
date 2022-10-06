@@ -12,17 +12,26 @@ function App() {
   const [user, setUser] = useState({ name: "", email: "", password: "" });
   const [show, setShow] = useState(false);
   const [show1, setShow1] = useState(false);
-  const [game, setGame] = useState(true);
+  const [game, setGame] = useState(false);
 
   if (show || show1) {
     document.body.classList.add("active-modal");
   } else {
     document.body.classList.remove("active-modal");
   }
+  useEffect(() => {
+    const x = localStorage.getItem('gameIs')
+    const y = JSON.parse(x)
+    setGame(y)
+  }, []);
 
   useEffect(() => {
-    console.log("game = ", game);
+    console.log("game = ", game)
   }, [game]);
+
+  function handleChange(newValue) {
+    setGame(newValue);
+  }
 
   if (!game) {
     return (
@@ -74,7 +83,7 @@ function App() {
   } else {
     return (
       <div className="game">
-        <Game />
+        <Game game={game} setGame={setGame}/>
       </div>
     );
   }

@@ -18,7 +18,7 @@ export default function Login({ game, setGame, show1, onClose1 }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http:/localhost:3000/login", data)
+      .post("/login", data)
       .then((result) => {
         swal(
           `🎗 Welcome, ${result.data.rows[0].name} 🎗`,
